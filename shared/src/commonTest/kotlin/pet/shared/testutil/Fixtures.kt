@@ -13,7 +13,7 @@ import kotlin.time.Instant
 import pet.shared.data.remote.CharacterApi
 import pet.shared.data.remote.configureClient
 import pet.shared.data.repository.CharacterRepositoryImpl
-import pet.shared.domain.model.Character
+import pet.shared.domain.model.CartoonCharacter
 import pet.shared.domain.model.CharacterStatus
 import pet.shared.domain.model.Gender
 
@@ -46,7 +46,7 @@ internal class RecordingClient(handler: suspend MockRequestHandleScope.(HttpRequ
 internal fun repositoryFor(recording: RecordingClient) =
     CharacterRepositoryImpl(CharacterApi(recording.client, baseUrl = "https://example.com/api"), newRequestId = { TEST_REQUEST_ID })
 
-internal fun testCharacter(id: Int) = Character(
+internal fun testCharacter(id: Int) = CartoonCharacter(
     id = id,
     name = "Character $id",
     status = CharacterStatus.ALIVE,

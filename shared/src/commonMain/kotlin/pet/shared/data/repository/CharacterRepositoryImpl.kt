@@ -12,7 +12,7 @@ import pet.shared.data.remote.safeApiCall
 import pet.shared.domain.error.DomainError
 import pet.shared.domain.error.Outcome
 import pet.shared.domain.error.map
-import pet.shared.domain.model.Character
+import pet.shared.domain.model.CartoonCharacter
 import pet.shared.domain.model.CharactersSnapshot
 import pet.shared.domain.repository.CharacterRepository
 
@@ -72,7 +72,7 @@ internal class CharacterRepositoryImpl(
         }
     }
 
-    override suspend fun getCharacter(id: Int): Outcome<Character> {
+    override suspend fun getCharacter(id: Int): Outcome<CartoonCharacter> {
         state.value.items.firstOrNull { it.id == id }?.let { return Outcome.Success(it) }
         return safeApiCall(newRequestId) { requestId -> api.getCharacter(id, requestId) }
             .map { it.toDomain() }
@@ -82,5 +82,5 @@ internal class CharacterRepositoryImpl(
         safeApiCall(newRequestId) { requestId -> api.getPage(page, requestId) }
             .map { dto -> PageResult(dto.results.map { it.toDomain() }, hasMore = dto.info.next != null) }
 
-    private class PageResult(val items: List<Character>, val hasMore: Boolean)
+    private class PageResult(val items: List<CartoonCharacter>, val hasMore: Boolean)
 }

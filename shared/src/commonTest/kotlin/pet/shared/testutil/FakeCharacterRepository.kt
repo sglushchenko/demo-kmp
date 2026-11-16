@@ -3,7 +3,7 @@ package pet.shared.testutil
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import pet.shared.domain.error.Outcome
-import pet.shared.domain.model.Character
+import pet.shared.domain.model.CartoonCharacter
 import pet.shared.domain.model.CharactersSnapshot
 import pet.shared.domain.repository.CharacterRepository
 
@@ -16,7 +16,7 @@ internal class FakeCharacterRepository(initial: CharactersSnapshot = CharactersS
     var refreshCalls = 0
     var onLoadNext: suspend () -> Outcome<Unit> = { Outcome.Success(Unit) }
     var onRefresh: suspend () -> Outcome<Unit> = { Outcome.Success(Unit) }
-    var onGetCharacter: suspend (Int) -> Outcome<Character> = { Outcome.Success(testCharacter(it)) }
+    var onGetCharacter: suspend (Int) -> Outcome<CartoonCharacter> = { Outcome.Success(testCharacter(it)) }
 
     override suspend fun loadNextPage(): Outcome<Unit> {
         loadNextCalls++
@@ -28,5 +28,5 @@ internal class FakeCharacterRepository(initial: CharactersSnapshot = CharactersS
         return onRefresh()
     }
 
-    override suspend fun getCharacter(id: Int): Outcome<Character> = onGetCharacter(id)
+    override suspend fun getCharacter(id: Int): Outcome<CartoonCharacter> = onGetCharacter(id)
 }

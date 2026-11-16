@@ -12,6 +12,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.yield
 import pet.shared.domain.error.DomainError
 import pet.shared.domain.error.Outcome
+import pet.shared.domain.model.CartoonCharacter
 import pet.shared.testutil.RecordingClient
 import pet.shared.testutil.TEST_REQUEST_ID
 import pet.shared.testutil.characterJson
@@ -159,8 +160,8 @@ class CharacterRepositoryTest {
         repository.loadNextPage()
         val requestsAfterList = recording.requests.size
 
-        val result = assertIs<Outcome.Success<*>>(repository.getCharacter(2))
-        assertEquals(2, (result.value as pet.shared.domain.model.Character).id)
+        val result = assertIs<Outcome.Success<CartoonCharacter>>(repository.getCharacter(2))
+        assertEquals(2, result.value.id)
         assertEquals(requestsAfterList, recording.requests.size)
     }
 
@@ -169,7 +170,7 @@ class CharacterRepositoryTest {
         val recording = RecordingClient { json(characterJson(42)) }
         val repository = repositoryFor(recording)
 
-        val result = assertIs<Outcome.Success<pet.shared.domain.model.Character>>(repository.getCharacter(42))
+        val result = assertIs<Outcome.Success<CartoonCharacter>>(repository.getCharacter(42))
         assertEquals(42, result.value.id)
         assertEquals(1, recording.requests.size)
         assertTrue(recording.requests.single().url.encodedPath.endsWith("/character/42"))

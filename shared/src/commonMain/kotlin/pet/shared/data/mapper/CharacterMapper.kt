@@ -3,11 +3,11 @@ package pet.shared.data.mapper
 import pet.shared.data.remote.dto.CharacterDto
 import pet.shared.data.remote.dto.CharacterStatusDto
 import pet.shared.data.remote.dto.GenderDto
-import pet.shared.domain.model.Character
+import pet.shared.domain.model.CartoonCharacter
 import pet.shared.domain.model.CharacterStatus
 import pet.shared.domain.model.Gender
 
-internal fun CharacterDto.toDomain() = Character(
+internal fun CharacterDto.toDomain() = CartoonCharacter(
     id = id,
     name = name,
     status = status.toDomain(),

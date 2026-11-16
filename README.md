@@ -38,7 +38,7 @@ or UI. The data layer is `internal`, so it never leaks into the Swift API.
 ```
 shared/src/commonMain/kotlin/pet/shared/
 ├── domain/
-│   ├── model/        Character, CharactersSnapshot, enums
+│   ├── model/        CartoonCharacter, CharactersSnapshot, enums
 │   ├── error/        DomainError (sealed), Outcome<T>
 │   ├── repository/   CharacterRepository (interface)
 │   └── usecase/      Observe / LoadNextPage / Refresh / GetCharacter

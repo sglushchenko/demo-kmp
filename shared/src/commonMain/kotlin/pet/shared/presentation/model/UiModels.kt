@@ -1,7 +1,7 @@
 package pet.shared.presentation.model
 
 import pet.shared.domain.error.DomainError
-import pet.shared.domain.model.Character
+import pet.shared.domain.model.CartoonCharacter
 import pet.shared.domain.model.CharacterStatus
 import pet.shared.domain.model.Gender
 
@@ -26,7 +26,7 @@ data class ErrorUi(
     val isRetryable: Boolean,
 )
 
-internal fun Character.toUi() = CharacterUi(
+internal fun CartoonCharacter.toUi() = CharacterUi(
     id = id,
     name = name,
     status = status,

@@ -2,7 +2,7 @@ package pet.shared.domain.model
 
 import kotlin.time.Instant
 
-data class Character(
+data class CartoonCharacter(
     val id: Int,
     val name: String,
     val status: CharacterStatus,
@@ -20,7 +20,7 @@ enum class Gender { FEMALE, MALE, GENDERLESS, UNKNOWN }
 
 /** Everything loaded so far plus whether another page can be requested. */
 data class CharactersSnapshot(
-    val items: List<Character>,
+    val items: List<CartoonCharacter>,
     val hasMore: Boolean,
 ) {
     companion object {
