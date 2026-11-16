@@ -10,6 +10,7 @@
 		02902AC70FBE9535D390A81F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4F9F5C96C5CF6D88257A256 /* ContentView.swift */; };
 		118F14D0CA19400ECFE84416 /* CharacterDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B46061786112906C7CA0ECC8 /* CharacterDetailModel.swift */; };
 		177BCED50659BD68E0EA6859 /* CharactersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D27441C12AA75807796533E5 /* CharactersModel.swift */; };
+		2A50242DC8B1C5B91137929A /* CharacterRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15771DD5D59350C2F6EE9FED /* CharacterRowView.swift */; };
 		2D6C25FA94CCD1F074B0CE8E /* KMPPetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A6D7D7191FB02014D713765F /* KMPPetApp.swift */; };
 		3BF8E18987A03FC7AD6BB808 /* CharactersModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79F6666D88E64F203454BD90 /* CharactersModel.swift */; };
 		4A5D04F9C894425737011CB3 /* ViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52BF7E4E587FE4E0116E7037 /* ViewState.swift */; };
@@ -18,6 +19,7 @@
 		6479763DEFA37E98226B9194 /* CharacterDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B47E4204CB373D4FF216328 /* CharacterDetailView.swift */; };
 		73E5684CD5326EFC36D511F4 /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B7087881736D364AD12CA5 /* ErrorView.swift */; };
 		744A16AE37322BFAD641B43C /* CharacterDetailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB554397F6419B46615C9D1E /* CharacterDetailModel.swift */; };
+		7B040A9B7633B4572D7B8AF0 /* CharacterRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15771DD5D59350C2F6EE9FED /* CharacterRowView.swift */; };
 		A034E775DD35F1B0C93FBD69 /* FlowCollector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70A4CFC72726D8CCA1A79952 /* FlowCollector.swift */; };
 		A8FB34D4CA23CC15E3DF26C0 /* ComposeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = A05D16C5F5E745074DE32F24 /* ComposeTab.swift */; };
 		AE9CCEB5D77871A6234FA22C /* ErrorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 21B7087881736D364AD12CA5 /* ErrorView.swift */; };
@@ -28,6 +30,7 @@
 
 /* Begin PBXFileReference section */
 		1194443B7063504962B2B077 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		15771DD5D59350C2F6EE9FED /* CharacterRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterRowView.swift; sourceTree = "<group>"; };
 		21B7087881736D364AD12CA5 /* ErrorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorView.swift; sourceTree = "<group>"; };
 		25B1405BA1FAD78F6D2FC06D /* iosApp-Plain.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = "iosApp-Plain.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B47E4204CB373D4FF216328 /* CharacterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailView.swift; sourceTree = "<group>"; };
@@ -70,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				2B47E4204CB373D4FF216328 /* CharacterDetailView.swift */,
+				15771DD5D59350C2F6EE9FED /* CharacterRowView.swift */,
 				A05D16C5F5E745074DE32F24 /* ComposeTab.swift */,
 				D4F9F5C96C5CF6D88257A256 /* ContentView.swift */,
 				21B7087881736D364AD12CA5 /* ErrorView.swift */,
@@ -222,6 +226,7 @@
 			files = (
 				118F14D0CA19400ECFE84416 /* CharacterDetailModel.swift in Sources */,
 				CED4E70D37FAC6090B7798DE /* CharacterDetailView.swift in Sources */,
+				2A50242DC8B1C5B91137929A /* CharacterRowView.swift in Sources */,
 				3BF8E18987A03FC7AD6BB808 /* CharactersModel.swift in Sources */,
 				F3C7D3EB68BFABE41FDCD9F5 /* ComposeTab.swift in Sources */,
 				4C340E2A5D9724CD16E8F6C3 /* ContentView.swift in Sources */,
@@ -238,6 +243,7 @@
 			files = (
 				744A16AE37322BFAD641B43C /* CharacterDetailModel.swift in Sources */,
 				6479763DEFA37E98226B9194 /* CharacterDetailView.swift in Sources */,
+				7B040A9B7633B4572D7B8AF0 /* CharacterRowView.swift in Sources */,
 				177BCED50659BD68E0EA6859 /* CharactersModel.swift in Sources */,
 				A8FB34D4CA23CC15E3DF26C0 /* ComposeTab.swift in Sources */,
 				02902AC70FBE9535D390A81F /* ContentView.swift in Sources */,
