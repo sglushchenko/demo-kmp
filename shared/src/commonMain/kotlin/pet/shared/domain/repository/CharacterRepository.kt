@@ -6,7 +6,7 @@ import pet.shared.domain.model.CartoonCharacter
 import pet.shared.domain.model.CharactersSnapshot
 
 /** Single source of truth for characters: loaded data lives here, so every screen observes the same state. */
-interface CharacterRepository {
+internal interface CharacterRepository {
     val characters: StateFlow<CharactersSnapshot>
 
     /** Loads the next page and appends it. A call made while another load is running is ignored. */

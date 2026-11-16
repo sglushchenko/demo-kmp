@@ -33,7 +33,8 @@ iOS app (SwiftUI)                    Compose Multiplatform tab
 ```
 
 Dependencies point inwards: `presentation -> domain <- data`. The domain layer knows nothing about Ktor, JSON
-or UI. The data layer is `internal`, so it never leaks into the Swift API.
+or UI. Domain and data are `internal`, so Swift sees only `AppContainer`, the two view models, their UI state
+and UI models (the generated header is about half the size it would be with everything public).
 
 ```
 shared/src/commonMain/kotlin/pet/shared/

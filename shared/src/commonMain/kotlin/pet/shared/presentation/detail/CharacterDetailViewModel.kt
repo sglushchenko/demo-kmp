@@ -20,7 +20,7 @@ sealed interface CharacterDetailUiState {
     data class Error(val error: ErrorUi) : CharacterDetailUiState
 }
 
-class CharacterDetailViewModel(
+class CharacterDetailViewModel internal constructor(
     private val characterId: Int,
     private val getCharacter: GetCharacterUseCase,
     dispatcher: CoroutineDispatcher = Dispatchers.Main,

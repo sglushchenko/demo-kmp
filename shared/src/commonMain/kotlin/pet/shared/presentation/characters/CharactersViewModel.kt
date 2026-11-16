@@ -38,7 +38,7 @@ sealed interface CharactersUiState {
 }
 
 /** Presents the repository data. It owns none, so a new instance reuses what is already loaded. */
-class CharactersViewModel(
+class CharactersViewModel internal constructor(
     private val observeCharacters: ObserveCharactersUseCase,
     private val loadNextPage: LoadNextCharactersPageUseCase,
     private val refreshCharacters: RefreshCharactersUseCase,

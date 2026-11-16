@@ -1,7 +1,7 @@
 package pet.shared.domain.error
 
 /** Failures the domain reports, in business terms. [requestId] identifies the failed operation in logs. */
-sealed interface DomainError {
+internal sealed interface DomainError {
     val requestId: String
 
     /** The device is offline or the service could not be reached. */
