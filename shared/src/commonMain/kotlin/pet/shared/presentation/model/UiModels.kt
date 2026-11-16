@@ -55,10 +55,10 @@ internal fun DomainError.toUi(): ErrorUi = when (this) {
         ErrorUi("The request timed out. Please try again.", requestId, isRetryable = true)
     is DomainError.NotFound ->
         ErrorUi("The requested item was not found.", requestId, isRetryable = false)
-    is DomainError.Server ->
-        ErrorUi("The server is having problems (HTTP $statusCode). Please try again later.", requestId, isRetryable = true)
-    is DomainError.Client ->
-        ErrorUi("The request was rejected (HTTP $statusCode).", requestId, isRetryable = false)
+    is DomainError.ServerFailure ->
+        ErrorUi("The server is having problems. Please try again later.", requestId, isRetryable = true)
+    is DomainError.RequestRejected ->
+        ErrorUi("The request was rejected.", requestId, isRetryable = false)
     is DomainError.InvalidResponse ->
         ErrorUi("The server sent a response the app could not understand.", requestId, isRetryable = false)
     is DomainError.Unknown ->

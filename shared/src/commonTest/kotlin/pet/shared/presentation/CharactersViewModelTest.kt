@@ -85,7 +85,7 @@ class CharactersViewModelTest {
         repository.loadsSuccessfully(1..3)
         val vm = viewModel(repository)
 
-        repository.onLoadNext = { Outcome.Failure(DomainError.Server(500, TEST_REQUEST_ID)) }
+        repository.onLoadNext = { Outcome.Failure(DomainError.ServerFailure(TEST_REQUEST_ID)) }
         vm.loadNext()
 
         val content = assertIs<CharactersUiState.Content>(vm.state.value)
@@ -128,7 +128,7 @@ class CharactersViewModelTest {
         val vm = viewModel(repository)
         val pageLoadsBeforeRefresh = repository.loadNextCalls
 
-        repository.onRefresh = { Outcome.Failure(DomainError.Server(500, TEST_REQUEST_ID)) }
+        repository.onRefresh = { Outcome.Failure(DomainError.ServerFailure(TEST_REQUEST_ID)) }
         vm.refresh()
         assertEquals(TEST_REQUEST_ID, assertIs<CharactersUiState.Content>(vm.state.value).error?.requestId)
 

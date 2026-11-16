@@ -40,15 +40,15 @@ class ErrorMappingTest {
     }
 
     @Test
-    fun detail_500_isServerError() = runTest {
+    fun detail_500_isServerFailure() = runTest {
         val error = errorOfDetail(RecordingClient { json("{}", HttpStatusCode.InternalServerError) })
-        assertEquals(DomainError.Server(500, TEST_REQUEST_ID), error)
+        assertEquals(DomainError.ServerFailure(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun detail_429_isClientError() = runTest {
+    fun detail_429_isRequestRejected() = runTest {
         val error = errorOfDetail(RecordingClient { json("{}", HttpStatusCode.TooManyRequests) })
-        assertEquals(DomainError.Client(429, TEST_REQUEST_ID), error)
+        assertEquals(DomainError.RequestRejected(TEST_REQUEST_ID), error)
     }
 
     @Test
@@ -90,9 +90,9 @@ class ErrorMappingTest {
     }
 
     @Test
-    fun page_503_isServerError() = runTest {
+    fun page_503_isServerFailure() = runTest {
         val error = errorOfPage(RecordingClient { json("{}", HttpStatusCode.ServiceUnavailable) })
-        assertEquals(DomainError.Server(503, TEST_REQUEST_ID), error)
+        assertEquals(DomainError.ServerFailure(TEST_REQUEST_ID), error)
     }
 
     @Test

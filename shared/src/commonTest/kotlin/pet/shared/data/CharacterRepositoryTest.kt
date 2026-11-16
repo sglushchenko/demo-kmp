@@ -85,7 +85,7 @@ class CharacterRepositoryTest {
         repository.loadNextPage()
 
         val failure = assertIs<Outcome.Failure>(repository.loadNextPage())
-        assertEquals(DomainError.Server(500, TEST_REQUEST_ID), failure.error)
+        assertEquals(DomainError.ServerFailure(TEST_REQUEST_ID), failure.error)
         assertEquals(3, repository.characters.value.items.size)
 
         failing = false

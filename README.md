@@ -78,8 +78,8 @@ repository returns `Outcome<T>` instead of throwing (exceptions are awkward to c
 | No network, DNS or TLS failure | `NoConnection` | message + Retry |
 | Timeout | `Timeout` | message + Retry |
 | HTTP 404 | `NotFound` | message, no retry |
-| Other HTTP 4xx | `Client(code)` | message, no retry |
-| HTTP 5xx | `Server(code)` | message + Retry |
+| Other HTTP 4xx | `RequestRejected` | message, no retry |
+| HTTP 5xx | `ServerFailure` | message + Retry |
 | Undecodable body | `InvalidResponse` | message, no retry |
 | Anything else | `Unknown` | message + Retry |
 
@@ -91,6 +91,7 @@ Details worth noting:
 - A failed "next page" keeps the loaded list on screen and shows a non-blocking error; a failed refresh keeps old data.
 - Unknown enum values from the server fall back to `UNKNOWN` instead of failing the whole response.
 - Cancellation is always rethrown so coroutine cancellation keeps working.
+- HTTP status codes are interpreted in the data layer only; `DomainError` and everything above it are free of HTTP concepts.
 
 Endpoints: `GET /character?page={n}` and `GET /character/{id}` from <https://rickandmortyapi.com>.
 

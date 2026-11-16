@@ -37,9 +37,9 @@ internal suspend fun <T> safeApiCall(
 internal fun Exception.toDomainError(requestId: String): DomainError = when (this) {
     is ClientRequestException ->
         if (response.status == HttpStatusCode.NotFound) DomainError.NotFound(requestId)
-        else DomainError.Client(response.status.value, requestId)
+        else DomainError.RequestRejected(requestId)
 
-    is ServerResponseException -> DomainError.Server(response.status.value, requestId)
+    is ServerResponseException -> DomainError.ServerFailure(requestId)
 
     // Timeouts extend IOException, so they must be checked first.
     is HttpRequestTimeoutException,
