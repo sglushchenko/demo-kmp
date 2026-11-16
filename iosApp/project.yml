@@ -1,0 +1,53 @@
+name: iosApp
+options:
+  bundleIdPrefix: pet.kmp
+  deploymentTarget:
+    iOS: "16.0"
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    ENABLE_USER_SCRIPT_SANDBOXING: NO
+    OTHER_LDFLAGS: "-framework Shared"
+    CODE_SIGN_STYLE: Automatic
+    CODE_SIGNING_ALLOWED: NO
+targets:
+  iosApp-Plain:
+    type: application
+    platform: iOS
+    info:
+      path: Plain/Info.plist
+      properties:
+        UILaunchScreen: {}
+        CADisableMinimumFrameDurationOnPhone: true
+    sources: [Common, Plain]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: pet.kmp.iosApp.plain
+        PRODUCT_NAME: KMP Plain
+        FRAMEWORK_SEARCH_PATHS: "$(SRCROOT)/../shared/build/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
+    preBuildScripts:
+      - name: Build Kotlin framework (plain Obj-C)
+        basedOnDependencyAnalysis: false
+        script: |
+          cd "$SRCROOT/.."
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode -Pskie=false
+  iosApp-SKIE:
+    type: application
+    platform: iOS
+    info:
+      path: Skie/Info.plist
+      properties:
+        UILaunchScreen: {}
+        CADisableMinimumFrameDurationOnPhone: true
+    sources: [Common, Skie]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: pet.kmp.iosApp.skie
+        PRODUCT_NAME: KMP SKIE
+        FRAMEWORK_SEARCH_PATHS: "$(SRCROOT)/../shared/build-skie/xcode-frameworks/$(CONFIGURATION)/$(SDK_NAME)"
+    preBuildScripts:
+      - name: Build Kotlin framework (SKIE)
+        basedOnDependencyAnalysis: false
+        script: |
+          cd "$SRCROOT/.."
+          ./gradlew :shared:embedAndSignAppleFrameworkForXcode -Pskie=true
