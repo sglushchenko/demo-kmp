@@ -1,0 +1,4 @@
+<resources>
+    <string name="compose_title">Compose Multiplatform tab</string>
+    <string name="compose_subtitle">UI, picture and strings live inside the shared module</string>
+</resources>
