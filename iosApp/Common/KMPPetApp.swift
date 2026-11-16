@@ -8,7 +8,7 @@ struct KMPPetApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                ContentView(container: container)
+                CharactersListView(container: container)
                     .tabItem { Label("SwiftUI", systemImage: "swift") }
                 ComposeTab(container: container)
                     .ignoresSafeArea(.keyboard)

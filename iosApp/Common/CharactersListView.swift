@@ -1,7 +1,7 @@
 import SwiftUI
 import Shared
 
-struct ContentView: View {
+struct CharactersListView: View {
     @StateObject private var model: CharactersModel
     private let container: AppContainer
 
