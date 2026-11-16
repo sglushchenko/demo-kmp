@@ -1,11 +1,6 @@
 package pet.shared.domain.error
 
-/**
- * Every failure the domain can report. Data-layer exceptions are translated into these,
- * so upper layers never depend on Ktor or any other transport detail.
- *
- * [requestId] is the correlation id sent to the server as `X-Request-Id`; it makes a failure traceable.
- */
+/** Failures the domain reports. [requestId] is the correlation id sent as `X-Request-Id`. */
 sealed interface DomainError {
     val requestId: String
 

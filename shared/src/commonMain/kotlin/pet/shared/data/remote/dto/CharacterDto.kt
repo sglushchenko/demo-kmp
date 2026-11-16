@@ -4,7 +4,7 @@ import kotlin.time.Instant
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-/** Wire format of the Rick and Morty API. Lives in the data layer only. */
+/** Wire format of the Rick and Morty API. */
 @Serializable
 internal enum class CharacterStatusDto {
     @SerialName("Alive") ALIVE,

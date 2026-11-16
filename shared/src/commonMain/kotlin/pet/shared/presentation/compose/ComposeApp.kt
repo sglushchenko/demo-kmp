@@ -29,10 +29,7 @@ import pet.shared.generated.resources.compose_title
 import pet.shared.generated.resources.local_banner
 import pet.shared.presentation.characters.CharactersUiState
 
-/**
- * The same ViewModel and repository as the SwiftUI tab, rendered with Compose Multiplatform.
- * Because the data lives in the repository, this tab shows already-loaded characters instantly.
- */
+/** Compose rendering of the same ViewModel and data as the SwiftUI tab. */
 @Composable
 fun ComposeApp() {
     val viewModel = remember { AppContainer.makeCharactersViewModel() }
@@ -41,7 +38,7 @@ fun ComposeApp() {
 
     MaterialTheme {
         Column(Modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            // Resource packaged with the shared module (composeResources), not the app's asset catalog.
+            // From this module's composeResources, not the app's asset catalog.
             Image(
                 painter = painterResource(Res.drawable.local_banner),
                 contentDescription = null,

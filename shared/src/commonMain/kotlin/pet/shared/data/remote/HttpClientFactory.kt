@@ -26,5 +26,5 @@ internal fun HttpClientConfig<*>.configureClient() {
     }
 }
 
-/** The engine is chosen per platform from the classpath (Darwin on iOS). */
+/** The engine is picked per platform from the classpath. */
 internal fun createHttpClient(): HttpClient = HttpClient { configureClient() }

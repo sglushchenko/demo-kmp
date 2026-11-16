@@ -1,7 +1,6 @@
 import Shared
 
-/// Without SKIE a Kotlin `Flow<T>` arrives as an untyped `Kotlinx_coroutines_coreFlow`.
-/// You implement `FlowCollector` yourself and cast the `Any?` you receive back to the expected type.
+/// Collects an untyped Kotlin Flow (no SKIE): values arrive as `Any?` and are cast to `T`.
 final class Collector<T>: Kotlinx_coroutines_coreFlowCollector {
     private let onValue: (T) -> Void
 

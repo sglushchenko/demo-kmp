@@ -31,7 +31,7 @@ internal class CharacterRepositoryImpl(
     private var nextPage = FIRST_PAGE
 
     override suspend fun loadNextPage(): Outcome<Unit> {
-        // A load is already running: skip instead of queueing, so fast scrolling cannot cause duplicate pages.
+        // Skip instead of queueing, so fast scrolling cannot request the same page twice.
         if (!loadLock.tryLock()) return Outcome.Success(Unit)
         try {
             val current = state.value

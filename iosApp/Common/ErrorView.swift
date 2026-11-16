@@ -1,6 +1,5 @@
 import SwiftUI
 
-/// Full-screen blocking error with an optional retry action.
 struct ErrorView: View {
     let error: ErrorInfo
     let retry: () -> Void

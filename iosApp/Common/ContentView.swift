@@ -42,8 +42,7 @@ struct ContentView: View {
                 Button { model.refresh() } label: { Image(systemName: "arrow.clockwise") }
             }
         }
-        // `.task` starts when the view appears and is cancelled automatically when it disappears.
-        // On re-appear it subscribes again and the StateFlow immediately re-delivers the current value.
+        // Cancelled when the view disappears; re-subscribing re-delivers the current state.
         .task { await model.observe() }
     }
 

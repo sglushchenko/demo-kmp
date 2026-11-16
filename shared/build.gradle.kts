@@ -46,7 +46,6 @@ kotlin {
 }
 
 compose.resources {
-    // Package of the generated `Res` class (used for Res.drawable.*, Res.string.*)
     packageOfResClass = "pet.shared.generated.resources"
     generateResClass = always
 }

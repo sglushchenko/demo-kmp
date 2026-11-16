@@ -5,12 +5,7 @@ import pet.shared.domain.error.Outcome
 import pet.shared.domain.model.Character
 import pet.shared.domain.model.CharactersSnapshot
 
-/**
- * Single source of truth for characters.
- *
- * Loaded data lives here, not in any screen, so several screens (or several UI toolkits)
- * observe the same state and a new screen never has to reload what is already available.
- */
+/** Single source of truth for characters: loaded data lives here, so every screen observes the same state. */
 interface CharacterRepository {
     val characters: StateFlow<CharactersSnapshot>
 

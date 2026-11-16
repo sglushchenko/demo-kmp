@@ -8,7 +8,7 @@ import io.ktor.client.request.parameter
 import pet.shared.data.remote.dto.CharacterDto
 import pet.shared.data.remote.dto.CharacterPageDto
 
-/** Thin wrapper over the HTTP endpoints. Throws; translation to domain errors happens in [safeApiCall]. */
+/** Raw HTTP calls; failures are translated in [safeApiCall]. */
 internal class CharacterApi(
     private val client: HttpClient,
     private val baseUrl: String = DEFAULT_BASE_URL,

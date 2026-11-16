@@ -1,8 +1,5 @@
 import SwiftUI
 
-// Swift-native types the UI works with. Each interop variant (Plain / SKIE) maps the Kotlin types
-// into these in its own model files; that mapping code is where the interop cost shows up.
-
 enum RowStatus {
     case alive, dead, unknown
 
@@ -36,7 +33,7 @@ struct ErrorInfo {
 
 enum ViewState {
     case loading
-    /// `error` is a non-blocking failure (for example loading the next page); the list stays visible.
+    /// `error` is non-blocking (for example a failed next page); the list stays visible.
     case content([CharacterRow], canLoadMore: Bool, loadingMore: Bool, error: ErrorInfo?)
     case error(ErrorInfo)
 }

@@ -7,7 +7,7 @@ import pet.shared.domain.model.Character
 import pet.shared.domain.model.CharactersSnapshot
 import pet.shared.domain.repository.CharacterRepository
 
-/** Hand-written fake: lets ViewModel tests run without any HTTP at all. */
+/** Hand-written fake repository for ViewModel tests. */
 internal class FakeCharacterRepository(initial: CharactersSnapshot = CharactersSnapshot.EMPTY) : CharacterRepository {
     val snapshot = MutableStateFlow(initial)
     override val characters: StateFlow<CharactersSnapshot> = snapshot

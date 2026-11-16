@@ -19,10 +19,7 @@ import pet.shared.domain.error.Outcome
 @OptIn(ExperimentalUuidApi::class)
 internal fun randomRequestId(): String = Uuid.random().toString()
 
-/**
- * Runs [block] with a fresh request id and converts any failure into an [Outcome.Failure].
- * Cancellation is rethrown so structured concurrency keeps working.
- */
+/** Runs [block] with a fresh request id and turns any failure into [Outcome.Failure]; cancellation is rethrown. */
 internal suspend fun <T> safeApiCall(
     newRequestId: () -> String,
     block: suspend (requestId: String) -> T,
@@ -53,7 +50,6 @@ internal fun Exception.toDomainError(requestId: String): DomainError = when (thi
     is ContentConvertException,
     is NoTransformationFoundException -> DomainError.InvalidResponse(requestId)
 
-    // Offline, DNS failure, connection reset, TLS errors and similar.
     is IOException -> DomainError.NoConnection(requestId)
 
     else -> DomainError.Unknown(message, requestId)

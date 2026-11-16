@@ -2,7 +2,6 @@ package pet.shared.domain.model
 
 import kotlin.time.Instant
 
-/** Core business entity. Knows nothing about JSON, HTTP or UI. */
 data class Character(
     val id: Int,
     val name: String,

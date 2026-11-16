@@ -1,8 +1,7 @@
 import SwiftUI
 import Shared
 
-// VARIANT B: the same Kotlin code, but the framework is built with SKIE.
-// Flow becomes a typed AsyncSequence; sealed types and enums become real Swift enums.
+// Interop variant: SKIE. Compare with Plain/CharactersModel.swift.
 
 @MainActor
 final class CharactersModel: ObservableObject {
@@ -11,9 +10,9 @@ final class CharactersModel: ObservableObject {
 
     private let vm = AppContainer.shared.makeCharactersViewModel()
 
-    /// The subscription lives exactly as long as the calling Task (SwiftUI `.task`).
+    /// Runs for as long as the calling Task.
     func observe() async {
-        for await value in vm.state {                     // typed StateFlow<CharactersUiState> as AsyncSequence
+        for await value in vm.state {
             state = Self.map(value)
         }
     }
@@ -25,7 +24,7 @@ final class CharactersModel: ObservableObject {
     deinit { vm.close() }
 
     private static func map(_ state: CharactersUiState) -> ViewState {
-        switch onEnum(of: state) {                        // exhaustive: the compiler flags any new Kotlin case
+        switch onEnum(of: state) {
         case .loading:
             return .loading
         case .error(let failure):
@@ -44,7 +43,7 @@ final class CharactersModel: ObservableObject {
 extension CharacterRow {
     init(_ ui: CharacterUi) {
         let status: RowStatus
-        switch ui.status {                                // the Kotlin enum is a native Swift enum
+        switch ui.status {
         case .alive: status = .alive
         case .dead: status = .dead
         case .unknown: status = .unknown

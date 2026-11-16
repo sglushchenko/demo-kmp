@@ -1,9 +1,6 @@
 package pet.shared.domain.error
 
-/**
- * Explicit success-or-failure result. Used instead of exceptions at layer boundaries
- * because exceptions are awkward to consume from Swift.
- */
+/** Success-or-failure result used at layer boundaries instead of exceptions, which are awkward to consume from Swift. */
 sealed interface Outcome<out T> {
     data class Success<out T>(val value: T) : Outcome<T>
     data class Failure(val error: DomainError) : Outcome<Nothing>

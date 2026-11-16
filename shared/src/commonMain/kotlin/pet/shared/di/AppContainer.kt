@@ -14,17 +14,14 @@ import pet.shared.platform.platformName
 import pet.shared.presentation.characters.CharactersViewModel
 import pet.shared.presentation.detail.CharacterDetailViewModel
 
-/**
- * Manual dependency injection, the only entry point iOS needs.
- * Swift calls `AppContainer.shared.makeCharactersViewModel()`; no DI framework is required for an app this size.
- */
+/** Manual DI and the single entry point iOS needs. */
 object AppContainer {
     @OptIn(ExperimentalUuidApi::class)
     val sessionId: String = Uuid.random().toString()
 
     val platform: String get() = platformName()
 
-    // One repository for the whole app: this is what makes the data independent of any screen.
+    // A single repository keeps the data independent of any screen.
     private val repository: CharacterRepository by lazy {
         CharacterRepositoryImpl(CharacterApi(createHttpClient()))
     }

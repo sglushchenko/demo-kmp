@@ -1,4 +1,4 @@
 package pet.shared.platform
 
-/** expect/actual example: implemented separately for each platform. */
+/** Platform name, implemented per platform with expect/actual. */
 expect fun platformName(): String
