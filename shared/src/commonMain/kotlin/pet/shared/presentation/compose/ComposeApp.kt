@@ -31,8 +31,8 @@ import pet.shared.presentation.characters.CharactersUiState
 
 /** Compose rendering of the same ViewModel and data as the SwiftUI tab. */
 @Composable
-fun ComposeApp() {
-    val viewModel = remember { AppContainer.makeCharactersViewModel() }
+fun ComposeApp(container: AppContainer) {
+    val viewModel = remember(container) { container.makeCharactersViewModel() }
     DisposableEffect(viewModel) { onDispose { viewModel.close() } }
     val state by viewModel.state.collectAsState()
 

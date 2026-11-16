@@ -7,8 +7,8 @@ final class CharacterDetailModel: ObservableObject {
 
     private let vm: CharacterDetailViewModel
 
-    init(characterId: Int) {
-        vm = AppContainer.shared.makeCharacterDetailViewModel(characterId: Int32(characterId))
+    init(characterId: Int, container: AppContainer) {
+        vm = container.makeCharacterDetailViewModel(characterId: Int32(characterId))
     }
 
     func observe() async {

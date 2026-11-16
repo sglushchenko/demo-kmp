@@ -51,7 +51,7 @@ shared/src/commonMain/kotlin/pet/shared/
 │   ├── detail/       CharacterDetailViewModel + UI state
 │   ├── model/        CharacterUi, ErrorUi and mappers (display strings are prepared here)
 │   └── compose/      Compose Multiplatform screen
-├── di/               AppContainer (manual DI, the single entry point for Swift)
+├── di/               AppContainer (manual DI; the app creates one and passes it down)
 └── platform/         expect/actual example
 ```
 
@@ -141,7 +141,7 @@ variant and breaks the Xcode build.
 
 Interop (Objective-C export):
 
-- Kotlin default arguments are not visible from Swift. `AppContainer` exposes explicit factory functions instead.
+- Kotlin default arguments are not visible from Swift. `AppContainer` exposes explicit factory functions and a no-argument constructor instead.
 - `data class.copy()` becomes `doCopy()`; `Int` becomes `Int32`; `Long` becomes `Int64`; a `Boolean` inside a
   generic becomes a boxed Kotlin wrapper type; `kotlin.time.Instant` becomes an opaque Kotlin type, so the UI model exposes epoch
   milliseconds instead.

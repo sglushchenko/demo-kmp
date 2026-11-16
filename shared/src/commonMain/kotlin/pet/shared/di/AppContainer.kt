@@ -14,17 +14,18 @@ import pet.shared.platform.platformName
 import pet.shared.presentation.characters.CharactersViewModel
 import pet.shared.presentation.detail.CharacterDetailViewModel
 
-/** Manual DI and the single entry point iOS needs. */
-object AppContainer {
+/**
+ * Composition root. The app creates one instance and passes it to every screen, so all screens
+ * share one repository and therefore the same data.
+ */
+class AppContainer internal constructor(private val repository: CharacterRepository) {
+
+    constructor() : this(CharacterRepositoryImpl(CharacterApi(createHttpClient())))
+
     @OptIn(ExperimentalUuidApi::class)
     val sessionId: String = Uuid.random().toString()
 
     val platform: String get() = platformName()
-
-    // A single repository keeps the data independent of any screen.
-    private val repository: CharacterRepository by lazy {
-        CharacterRepositoryImpl(CharacterApi(createHttpClient()))
-    }
 
     fun makeCharactersViewModel() = CharactersViewModel(
         observeCharacters = ObserveCharactersUseCase(repository),

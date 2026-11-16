@@ -8,7 +8,11 @@ final class CharactersModel: ObservableObject {
     @Published private(set) var state: ViewState = .loading
     let variant = "SKIE"
 
-    private let vm = AppContainer.shared.makeCharactersViewModel()
+    private let vm: CharactersViewModel
+
+    init(container: AppContainer) {
+        vm = container.makeCharactersViewModel()
+    }
 
     /// Runs for as long as the calling Task.
     func observe() async {

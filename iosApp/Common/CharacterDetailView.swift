@@ -1,10 +1,11 @@
 import SwiftUI
+import Shared
 
 struct CharacterDetailView: View {
     @StateObject private var model: CharacterDetailModel
 
-    init(characterId: Int) {
-        _model = StateObject(wrappedValue: CharacterDetailModel(characterId: characterId))
+    init(characterId: Int, container: AppContainer) {
+        _model = StateObject(wrappedValue: CharacterDetailModel(characterId: characterId, container: container))
     }
 
     var body: some View {

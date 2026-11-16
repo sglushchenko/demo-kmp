@@ -2,7 +2,13 @@ import SwiftUI
 import Shared
 
 struct ContentView: View {
-    @StateObject private var model = CharactersModel()
+    @StateObject private var model: CharactersModel
+    private let container: AppContainer
+
+    init(container: AppContainer) {
+        self.container = container
+        _model = StateObject(wrappedValue: CharactersModel(container: container))
+    }
 
     var body: some View {
         NavigationStack {
@@ -37,7 +43,7 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Rick & Morty")
-            .navigationDestination(for: Int.self) { CharacterDetailView(characterId: $0) }
+            .navigationDestination(for: Int.self) { CharacterDetailView(characterId: $0, container: container) }
             .toolbar {
                 Button { model.refresh() } label: { Image(systemName: "arrow.clockwise") }
             }
@@ -47,7 +53,7 @@ struct ContentView: View {
     }
 
     private var footer: some View {
-        Text("Shared Kotlin on \(AppContainer.shared.platform) | \(model.variant) | session \(AppContainer.shared.sessionId.prefix(8))")
+        Text("Shared Kotlin on \(container.platform) | \(model.variant) | session \(container.sessionId.prefix(8))")
     }
 }
 
