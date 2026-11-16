@@ -12,12 +12,8 @@ final class CharactersModel: ObservableObject {
 
     /// Runs for as long as the calling Task; cancelling it cancels the Kotlin `collect`.
     func observe() async {
-        do {
-            try await vm.state.collect(collector: Collector<CharactersUiState> { [weak self] value in
-                Task { @MainActor in self?.state = Self.map(value) }
-            })
-        } catch {
-            // Cancellation is the expected way this ends.
+        for await value in vm.state.stream(of: CharactersUiState.self) {
+            state = Self.map(value)
         }
     }
 

@@ -12,12 +12,8 @@ final class CharacterDetailModel: ObservableObject {
     }
 
     func observe() async {
-        do {
-            try await vm.state.collect(collector: Collector<CharacterDetailUiState> { [weak self] value in
-                Task { @MainActor in self?.state = Self.map(value) }
-            })
-        } catch {
-            // Cancellation ends the subscription.
+        for await value in vm.state.stream(of: CharacterDetailUiState.self) {
+            state = Self.map(value)
         }
     }
 
