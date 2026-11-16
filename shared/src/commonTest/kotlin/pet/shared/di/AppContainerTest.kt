@@ -37,7 +37,7 @@ class AppContainerTest {
     }
 
     @Test
-    fun eachContainerIsItsOwnSession() {
+    fun containers_haveDistinctSessionIds() {
         assertNotEquals(containerWith().sessionId, containerWith().sessionId)
     }
 }

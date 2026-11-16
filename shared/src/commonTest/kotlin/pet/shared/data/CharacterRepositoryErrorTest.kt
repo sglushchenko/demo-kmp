@@ -19,7 +19,7 @@ import pet.shared.testutil.pageJson
 import pet.shared.testutil.repositoryFor
 
 /** Every failure of every endpoint must surface as a typed [DomainError], never as a raw exception. */
-class ErrorMappingTest {
+class CharacterRepositoryErrorTest {
 
     private suspend fun errorOfDetail(handler: RecordingClient): DomainError {
         val result = repositoryFor(handler).getCharacter(1)
@@ -34,49 +34,49 @@ class ErrorMappingTest {
     // --- GET /character/{id} ---
 
     @Test
-    fun detail_404_isNotFound() = runTest {
+    fun getCharacter_404_isNotFound() = runTest {
         val error = errorOfDetail(RecordingClient { json("""{"error":"Character not found"}""", HttpStatusCode.NotFound) })
         assertEquals(DomainError.NotFound(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun detail_500_isServerFailure() = runTest {
+    fun getCharacter_500_isServerFailure() = runTest {
         val error = errorOfDetail(RecordingClient { json("{}", HttpStatusCode.InternalServerError) })
         assertEquals(DomainError.ServerFailure(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun detail_429_isRequestRejected() = runTest {
+    fun getCharacter_429_isRequestRejected() = runTest {
         val error = errorOfDetail(RecordingClient { json("{}", HttpStatusCode.TooManyRequests) })
         assertEquals(DomainError.RequestRejected(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun detail_malformedBody_isInvalidResponse() = runTest {
+    fun getCharacter_malformedBody_isInvalidResponse() = runTest {
         val error = errorOfDetail(RecordingClient { json("this is not json") })
         assertEquals(DomainError.InvalidResponse(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun detail_missingRequiredField_isInvalidResponse() = runTest {
+    fun getCharacter_missingRequiredField_isInvalidResponse() = runTest {
         val error = errorOfDetail(RecordingClient { json("""{"id":1}""") })
         assertEquals(DomainError.InvalidResponse(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun detail_ioFailure_isNoConnection() = runTest {
+    fun getCharacter_ioFailure_isNoConnection() = runTest {
         val error = errorOfDetail(RecordingClient { throw IOException("offline") })
         assertEquals(DomainError.NoConnection(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun detail_timeout_isTimeout() = runTest {
+    fun getCharacter_timeout_isTimeout() = runTest {
         val error = errorOfDetail(RecordingClient { throw HttpRequestTimeoutException("https://example.com", 1_000L) })
         assertEquals(DomainError.Timeout(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun detail_unexpectedException_isUnknown() = runTest {
+    fun getCharacter_unexpectedException_isUnknown() = runTest {
         val error = errorOfDetail(RecordingClient { throw IllegalStateException("boom") })
         assertEquals(DomainError.Unknown("boom", TEST_REQUEST_ID), error)
     }
@@ -84,25 +84,25 @@ class ErrorMappingTest {
     // --- GET /character?page={n} ---
 
     @Test
-    fun page_404_onFirstPage_isNotFound() = runTest {
+    fun loadNextPage_404OnFirstPage_isNotFound() = runTest {
         val error = errorOfPage(RecordingClient { json("""{"error":"There is nothing here"}""", HttpStatusCode.NotFound) })
         assertEquals(DomainError.NotFound(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun page_503_isServerFailure() = runTest {
+    fun loadNextPage_503_isServerFailure() = runTest {
         val error = errorOfPage(RecordingClient { json("{}", HttpStatusCode.ServiceUnavailable) })
         assertEquals(DomainError.ServerFailure(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun page_malformedBody_isInvalidResponse() = runTest {
+    fun loadNextPage_malformedBody_isInvalidResponse() = runTest {
         val error = errorOfPage(RecordingClient { json("""{"results": "wrong"}""") })
         assertEquals(DomainError.InvalidResponse(TEST_REQUEST_ID), error)
     }
 
     @Test
-    fun page_ioFailure_isNoConnection() = runTest {
+    fun loadNextPage_ioFailure_isNoConnection() = runTest {
         val error = errorOfPage(RecordingClient { throw IOException("offline") })
         assertEquals(DomainError.NoConnection(TEST_REQUEST_ID), error)
     }
@@ -110,14 +110,14 @@ class ErrorMappingTest {
     // --- Cross-cutting behaviour ---
 
     @Test
-    fun everyRequestCarriesTheRequestIdHeader() = runTest {
+    fun requests_carryTheRequestIdHeader() = runTest {
         val recording = RecordingClient { json(characterJson(1)) }
         repositoryFor(recording).getCharacter(1)
         assertEquals(TEST_REQUEST_ID, recording.requests.single().headers[REQUEST_ID_HEADER])
     }
 
     @Test
-    fun unknownEnumValuesFallBackInsteadOfFailing() = runTest {
+    fun unknownEnumValues_fallBackToUnknown() = runTest {
         val recording = RecordingClient {
             json(
                 """{"info":{"count":1,"pages":1,"next":null},"results":[${characterJson(7, status = "Robot", gender = "Other")}]}""",
@@ -129,7 +129,7 @@ class ErrorMappingTest {
     }
 
     @Test
-    fun successfulPageIsNotAnError() = runTest {
+    fun loadNextPage_success_isNotAnError() = runTest {
         val result = repositoryFor(RecordingClient { json(pageJson(1..3, hasNext = false)) }).loadNextPage()
         assertIs<Outcome.Success<Unit>>(result)
     }

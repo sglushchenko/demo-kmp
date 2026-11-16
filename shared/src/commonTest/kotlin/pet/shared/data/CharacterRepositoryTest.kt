@@ -58,7 +58,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun pageBeyondTheEnd_404_meansNoMoreData_notAnError() = runTest {
+    fun loadNextPage_404PastTheEnd_meansNoMoreData() = runTest {
         // The server says "has next" but the following page is missing.
         val recording = RecordingClient { request ->
             if (request.url.parameters["page"] == "1") json(pageJson(1..2, hasNext = true))
@@ -73,7 +73,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun failedPage_keepsLoadedData_andCanBeRetried() = runTest {
+    fun loadNextPage_failure_keepsLoadedDataAndAllowsRetry() = runTest {
         var failing = true
         val recording = RecordingClient { request ->
             val page = request.url.parameters["page"]?.toInt() ?: 1
@@ -94,7 +94,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun duplicatesAcrossPagesAreIgnored() = runTest {
+    fun loadNextPage_duplicatesAcrossPages_areIgnored() = runTest {
         val recording = RecordingClient { request ->
             if (request.url.parameters["page"] == "1") json(pageJson(1..3, hasNext = true))
             else json(pageJson(3..5, hasNext = false))
@@ -121,7 +121,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun failedRefresh_keepsTheOldData() = runTest {
+    fun refresh_failure_keepsTheOldData() = runTest {
         var failing = false
         val recording = RecordingClient {
             if (failing) json("{}", HttpStatusCode.ServiceUnavailable) else json(pageJson(1..3, hasNext = true))
@@ -135,7 +135,7 @@ class CharacterRepositoryTest {
     }
 
     @Test
-    fun overlappingLoads_runOnlyOneRequest() = runTest {
+    fun loadNextPage_overlappingCalls_runOnlyOneRequest() = runTest {
         val recording = RecordingClient {
             delay(50)
             json(pageJson(1..3, hasNext = true))

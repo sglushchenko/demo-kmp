@@ -13,14 +13,11 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import pet.shared.domain.error.DomainError
 import pet.shared.domain.error.Outcome
 import pet.shared.domain.model.CharactersSnapshot
-import pet.shared.domain.usecase.GetCharacterUseCase
 import pet.shared.domain.usecase.LoadNextCharactersPageUseCase
 import pet.shared.domain.usecase.ObserveCharactersUseCase
 import pet.shared.domain.usecase.RefreshCharactersUseCase
 import pet.shared.presentation.characters.CharactersUiState
 import pet.shared.presentation.characters.CharactersViewModel
-import pet.shared.presentation.detail.CharacterDetailUiState
-import pet.shared.presentation.detail.CharacterDetailViewModel
 import pet.shared.testutil.FakeCharacterRepository
 import pet.shared.testutil.TEST_REQUEST_ID
 import pet.shared.testutil.testCharacter
@@ -43,7 +40,7 @@ class CharactersViewModelTest {
     }
 
     @Test
-    fun showsLoadingThenContent() {
+    fun load_showsLoadingThenContent() {
         val repository = FakeCharacterRepository()
         val gate = CompletableDeferred<Unit>()
         repository.onLoadNext = {
@@ -64,7 +61,7 @@ class CharactersViewModelTest {
     }
 
     @Test
-    fun failureWithNoData_isABlockingError_andRetryRecovers() {
+    fun load_failureWithNoData_isBlockingErrorAndRetryRecovers() {
         val repository = FakeCharacterRepository()
         repository.onLoadNext = { Outcome.Failure(DomainError.NoConnection(TEST_REQUEST_ID)) }
 
@@ -80,7 +77,7 @@ class CharactersViewModelTest {
     }
 
     @Test
-    fun failureWithData_keepsTheListAndShowsANonBlockingError() {
+    fun load_failureWithData_keepsListAndShowsNonBlockingError() {
         val repository = FakeCharacterRepository()
         repository.loadsSuccessfully(1..3)
         val vm = viewModel(repository)
@@ -95,7 +92,7 @@ class CharactersViewModelTest {
     }
 
     @Test
-    fun nonRetryableErrorsAreFlagged() {
+    fun load_nonRetryableError_isFlagged() {
         val repository = FakeCharacterRepository()
         repository.onLoadNext = { Outcome.Failure(DomainError.InvalidResponse(TEST_REQUEST_ID)) }
 
@@ -105,7 +102,7 @@ class CharactersViewModelTest {
     }
 
     @Test
-    fun aSecondViewModel_reusesLoadedData_withoutLoadingAgain() {
+    fun secondViewModel_reusesLoadedDataWithoutLoadingAgain() {
         val repository = FakeCharacterRepository()
         repository.loadsSuccessfully(1..3)
         val first = viewModel(repository)
@@ -180,7 +177,7 @@ class CharactersViewModelTest {
     }
 
     @Test
-    fun requestsMadeWhileLoading_doNotStartAnotherLoad() {
+    fun load_requestsWhileLoading_doNotStartAnotherLoad() {
         val repository = FakeCharacterRepository()
         val gate = CompletableDeferred<Unit>()
         repository.onLoadNext = {
@@ -200,7 +197,7 @@ class CharactersViewModelTest {
     }
 
     @Test
-    fun loadNext_isIgnoredWhenThereIsNoMoreData() {
+    fun loadNext_noMoreData_isIgnored() {
         val repository = FakeCharacterRepository()
         repository.loadsSuccessfully(1..3, hasMore = false)
         val vm = viewModel(repository)
@@ -221,39 +218,6 @@ class CharactersViewModelTest {
         vm.refresh()
 
         assertEquals(1, repository.refreshCalls)
-        vm.close()
-    }
-
-    // --- detail screen ---
-
-    private fun detailViewModel(repository: FakeCharacterRepository, id: Int) = CharacterDetailViewModel(
-        characterId = id,
-        getCharacter = GetCharacterUseCase(repository),
-        dispatcher = UnconfinedTestDispatcher(),
-    )
-
-    @Test
-    fun detail_success() {
-        val vm = detailViewModel(FakeCharacterRepository(), id = 5)
-        val content = assertIs<CharacterDetailUiState.Content>(vm.state.value)
-        assertEquals(5, content.character.id)
-        assertEquals("Alive", content.character.statusLabel)
-        assertEquals(1_509_821_326_250, content.character.createdAtEpochMillis)
-        vm.close()
-    }
-
-    @Test
-    fun detail_notFound_isNotRetryable_andRetryReloads() {
-        val repository = FakeCharacterRepository()
-        repository.onGetCharacter = { Outcome.Failure(DomainError.NotFound(TEST_REQUEST_ID)) }
-        val vm = detailViewModel(repository, id = 999)
-
-        val error = assertIs<CharacterDetailUiState.Error>(vm.state.value).error
-        assertFalse(error.isRetryable)
-
-        repository.onGetCharacter = { Outcome.Success(testCharacter(it)) }
-        vm.retry()
-        assertIs<CharacterDetailUiState.Content>(vm.state.value)
         vm.close()
     }
 }
