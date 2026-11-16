@@ -180,6 +180,26 @@ class CharactersViewModelTest {
     }
 
     @Test
+    fun requestsMadeWhileLoading_doNotStartAnotherLoad() {
+        val repository = FakeCharacterRepository()
+        val gate = CompletableDeferred<Unit>()
+        repository.onLoadNext = {
+            gate.await()
+            Outcome.Success(Unit)
+        }
+        val vm = viewModel(repository) // the initial load starts here and waits on the gate
+
+        repeat(3) { vm.loadNext() }
+        vm.refresh()
+        vm.retry()
+
+        assertEquals(1, repository.loadNextCalls)
+        assertEquals(0, repository.refreshCalls)
+        gate.complete(Unit)
+        vm.close()
+    }
+
+    @Test
     fun loadNext_isIgnoredWhenThereIsNoMoreData() {
         val repository = FakeCharacterRepository()
         repository.loadsSuccessfully(1..3, hasMore = false)

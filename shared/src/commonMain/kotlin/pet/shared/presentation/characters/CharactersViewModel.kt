@@ -3,13 +3,13 @@ package pet.shared.presentation.characters
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pet.shared.domain.error.DomainError
@@ -37,33 +37,33 @@ sealed interface CharactersUiState {
     data class Error(val error: ErrorUi) : CharactersUiState
 }
 
-/**
- * Presents the shared repository data. It owns no data itself, so creating another instance
- * (for another screen or UI toolkit) shows what is already loaded without hitting the network again.
- */
+/** Presents the repository data. It owns none, so a new instance reuses what is already loaded. */
 class CharactersViewModel(
     private val observeCharacters: ObserveCharactersUseCase,
     private val loadNextPage: LoadNextCharactersPageUseCase,
     private val refreshCharacters: RefreshCharactersUseCase,
     dispatcher: CoroutineDispatcher = Dispatchers.Main,
 ) {
-    private data class LoadState(val isLoading: Boolean, val error: DomainError? = null)
-
     private enum class LoadKind { NEXT_PAGE, REFRESH }
+
+    private data class LoadState(
+        val isLoading: Boolean = false,
+        val kind: LoadKind = LoadKind.NEXT_PAGE,
+        val error: DomainError? = null,
+    )
 
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
     private val snapshots: StateFlow<CharactersSnapshot> = observeCharacters()
-    private val loadState = MutableStateFlow(LoadState(isLoading = snapshots.value.items.isEmpty()))
-    private var loadJob: Job? = null
-    private var lastLoad = LoadKind.NEXT_PAGE
+    private val loadState = MutableStateFlow(LoadState())
+
+    // Declared before `state` so that its initial value is already Loading.
+    init {
+        if (snapshots.value.items.isEmpty()) loadNext()
+    }
 
     val state: StateFlow<CharactersUiState> =
         combine(snapshots, loadState) { snapshot, load -> reduce(snapshot, load) }
             .stateIn(scope, SharingStarted.Eagerly, reduce(snapshots.value, loadState.value))
-
-    init {
-        if (snapshots.value.items.isEmpty()) loadNext()
-    }
 
     fun loadNext() {
         val snapshot = snapshots.value
@@ -73,24 +73,22 @@ class CharactersViewModel(
 
     fun refresh() = launchLoad(LoadKind.REFRESH) { refreshCharacters() }
 
-    /** Repeats the operation that was started last, so a failed refresh is refreshed again rather than paging. */
-    fun retry() = when (lastLoad) {
+    /** Repeats the last operation that was started. */
+    fun retry() = when (loadState.value.kind) {
         LoadKind.NEXT_PAGE -> loadNext()
         LoadKind.REFRESH -> refresh()
     }
 
     fun close() = scope.cancel()
 
-    // A load that is already running wins; extra calls are ignored.
+    // Atomic: only one caller can flip `isLoading`, concurrent calls return without starting anything.
     private fun launchLoad(kind: LoadKind, block: suspend () -> Outcome<Unit>) {
-        if (loadJob?.isActive == true) return
-        lastLoad = kind
-        loadState.value = LoadState(isLoading = true)
-        loadJob = scope.launch {
-            loadState.value = when (val result = block()) {
-                is Outcome.Success -> LoadState(isLoading = false)
-                is Outcome.Failure -> LoadState(isLoading = false, error = result.error)
-            }
+        val previous = loadState.getAndUpdate { if (it.isLoading) it else LoadState(isLoading = true, kind = kind) }
+        if (previous.isLoading) return
+
+        scope.launch {
+            val error = (block() as? Outcome.Failure)?.error
+            loadState.value = LoadState(isLoading = false, kind = kind, error = error)
         }
     }
 
