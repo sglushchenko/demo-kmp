@@ -7,6 +7,13 @@ Multiplatform to compare both UI approaches.
 
 The goal is to show the real integration process and its pitfalls, not to be a production app.
 
+<p align="center">
+  <img src="docs/demo.gif" alt="Demo: SwiftUI list, detail screen and the Compose tab showing the same shared data" width="300">
+</p>
+
+The recording shows the SwiftUI list loading from the shared module, scrolling, the detail screen (served from the
+already loaded data), and the Compose tab rendering the same state.
+
 ## What it demonstrates
 
 - A shared Kotlin module consumed by a native iOS app as a framework.
