@@ -115,7 +115,7 @@ If you change `project.yml`, run `xcodegen generate` inside `iosApp/`.
 ./gradlew :shared:iosSimulatorArm64Test
 ```
 
-The suite (34 tests) runs on the iOS simulator and covers every error type for both endpoints, repository behaviour
+The suite runs on the iOS simulator and covers every error type for both endpoints, repository behaviour
 (pagination, de-duplication, refresh, caching, overlapping loads) and ViewModel states. HTTP is mocked with Ktor's
 `MockEngine`; ViewModels are tested against a hand-written fake repository.
 

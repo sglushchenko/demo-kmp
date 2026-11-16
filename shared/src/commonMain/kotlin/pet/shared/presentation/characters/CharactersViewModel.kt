@@ -49,10 +49,13 @@ class CharactersViewModel(
 ) {
     private data class LoadState(val isLoading: Boolean, val error: DomainError? = null)
 
+    private enum class LoadKind { NEXT_PAGE, REFRESH }
+
     private val scope = CoroutineScope(SupervisorJob() + dispatcher)
     private val snapshots: StateFlow<CharactersSnapshot> = observeCharacters()
     private val loadState = MutableStateFlow(LoadState(isLoading = snapshots.value.items.isEmpty()))
     private var loadJob: Job? = null
+    private var lastLoad = LoadKind.NEXT_PAGE
 
     val state: StateFlow<CharactersUiState> =
         combine(snapshots, loadState) { snapshot, load -> reduce(snapshot, load) }
@@ -65,19 +68,23 @@ class CharactersViewModel(
     fun loadNext() {
         val snapshot = snapshots.value
         if (snapshot.items.isNotEmpty() && !snapshot.hasMore) return
-        launchLoad { loadNextPage() }
+        launchLoad(LoadKind.NEXT_PAGE) { loadNextPage() }
     }
 
-    fun refresh() = launchLoad { refreshCharacters() }
+    fun refresh() = launchLoad(LoadKind.REFRESH) { refreshCharacters() }
 
-    /** Retries whatever failed last: the first page when the list is empty, otherwise the next page. */
-    fun retry() = loadNext()
+    /** Repeats the operation that was started last, so a failed refresh is refreshed again rather than paging. */
+    fun retry() = when (lastLoad) {
+        LoadKind.NEXT_PAGE -> loadNext()
+        LoadKind.REFRESH -> refresh()
+    }
 
     fun close() = scope.cancel()
 
     // A load that is already running wins; extra calls are ignored.
-    private fun launchLoad(block: suspend () -> Outcome<Unit>) {
+    private fun launchLoad(kind: LoadKind, block: suspend () -> Outcome<Unit>) {
         if (loadJob?.isActive == true) return
+        lastLoad = kind
         loadState.value = LoadState(isLoading = true)
         loadJob = scope.launch {
             loadState.value = when (val result = block()) {

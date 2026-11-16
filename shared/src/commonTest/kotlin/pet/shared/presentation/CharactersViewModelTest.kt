@@ -122,6 +122,64 @@ class CharactersViewModelTest {
     }
 
     @Test
+    fun retry_afterFailedRefresh_refreshesAgainInsteadOfPaging() {
+        val repository = FakeCharacterRepository()
+        repository.loadsSuccessfully(1..3)
+        val vm = viewModel(repository)
+        val pageLoadsBeforeRefresh = repository.loadNextCalls
+
+        repository.onRefresh = { Outcome.Failure(DomainError.Server(500, TEST_REQUEST_ID)) }
+        vm.refresh()
+        assertEquals(TEST_REQUEST_ID, assertIs<CharactersUiState.Content>(vm.state.value).error?.requestId)
+
+        repository.onRefresh = { Outcome.Success(Unit) }
+        vm.retry()
+
+        assertEquals(2, repository.refreshCalls)
+        assertEquals(pageLoadsBeforeRefresh, repository.loadNextCalls)
+        assertNull(assertIs<CharactersUiState.Content>(vm.state.value).error)
+        vm.close()
+    }
+
+    @Test
+    fun retry_afterFailedPageLoad_loadsThePageAgainWithoutRefreshing() {
+        val repository = FakeCharacterRepository()
+        repository.loadsSuccessfully(1..3)
+        val vm = viewModel(repository)
+
+        repository.onLoadNext = { Outcome.Failure(DomainError.NoConnection(TEST_REQUEST_ID)) }
+        vm.loadNext()
+        val failedPageLoads = repository.loadNextCalls
+
+        repository.loadsSuccessfully(4..6)
+        vm.retry()
+
+        assertEquals(failedPageLoads + 1, repository.loadNextCalls)
+        assertEquals(0, repository.refreshCalls)
+        assertEquals(6, assertIs<CharactersUiState.Content>(vm.state.value).items.size)
+        vm.close()
+    }
+
+    @Test
+    fun retry_followsTheMostRecentOperation() {
+        val repository = FakeCharacterRepository()
+        repository.loadsSuccessfully(1..3)
+        val vm = viewModel(repository)
+
+        vm.refresh()
+        repository.onLoadNext = { Outcome.Failure(DomainError.Timeout(TEST_REQUEST_ID)) }
+        vm.loadNext()
+        val pageLoadsBeforeRetry = repository.loadNextCalls
+        val refreshesBeforeRetry = repository.refreshCalls
+
+        vm.retry()
+
+        assertEquals(pageLoadsBeforeRetry + 1, repository.loadNextCalls)
+        assertEquals(refreshesBeforeRetry, repository.refreshCalls)
+        vm.close()
+    }
+
+    @Test
     fun loadNext_isIgnoredWhenThereIsNoMoreData() {
         val repository = FakeCharacterRepository()
         repository.loadsSuccessfully(1..3, hasMore = false)
